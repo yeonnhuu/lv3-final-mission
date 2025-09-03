@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: lv3-final-mission
+
+  config:
+    import:
+      - optional:file:.env.prod[.properties]
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    url: jdbc:h2:mem:database
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: never
+
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    org.springframework: debug
+    org.springframework.web.client.RestClient: trace
+    root: info
+
+auth:
+  jwt:
+    token:
+      secret-key: ${AUTH_JWT_TOKEN_SECRET_KEY}
+      expire-length: 3600000 # 1 hour
+
+email:
+  sendgrid:
+    base-url: https://api.sendgrid.com
+    api-key: ${EMAIL_SENDGRID_API_KEY}
+    from: ${EMAIL_SENDGRID_FROM}
+
+  connect-timeout-length: 3s
+  read-timeout-length: 5s
+
