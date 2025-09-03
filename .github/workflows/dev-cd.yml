@@ -1,0 +1,66 @@
+name: Dev CD
+
+on:
+  workflow_run:
+    workflows: ["Dev CI"]
+    types: [completed]
+    branches: [be/dev]
+
+jobs:
+  deploy:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'be/dev'
+    runs-on: [self-hosted, be, dev]
+    environment: dev
+
+    permissions:
+      actions: read
+      contents: read
+
+    env:
+      DOCKER_REPO: ${{ secrets.DOCKERHUB_USERNAME }}/lv3-final-mission
+
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Download image tag artifact from CI
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read deploy tag
+        id: tag
+        run: |
+          TAG=$(cat image-tag.txt)
+          echo "DEPLOY_TAG=$TAG" >> $GITHUB_ENV
+          echo "Deploying tag: $TAG"
+
+      - name: Pull image
+        run: |
+          sudo docker pull "$DOCKER_REPO:${{ env.DEPLOY_TAG }}"
+          sudo docker tag  "$DOCKER_REPO:${{ env.DEPLOY_TAG }}" "$DOCKER_REPO:current"
+
+      - name: Deploy with Docker Compose
+        env:
+          IMAGE_TAG: ${{ env.DEPLOY_TAG }}
+        run: |
+          cd /home/ubuntu/app
+          echo "Using image: $DOCKER_REPO:$IMAGE_TAG"
+          # Compose should reference the tag via ${IMAGE_TAG} or use :current tag above
+          sudo -E docker compose up --no-deps -d app
+
+      - name: Verify
+        run: |
+          sudo docker ps
+          sudo docker images | grep "$DOCKER_REPO" || true
+
+      - name: Prune dangling images
+        run: sudo docker image prune -f
