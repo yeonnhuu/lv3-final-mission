@@ -71,27 +71,7 @@ test {
     useJUnitPlatform()
 }
 
-asciidoctor {
-    configurations 'asciidoctorExt'
-    sources {
-        include 'index.adoc'
-    }
-    baseDirFollowsSourceFile()
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-tasks.register('createDocument', Copy) {
-    doFirst {
-        delete file("src/main/resources/static/docs")
-    }
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
 bootJar {
-    dependsOn tasks.named('createDocument')
     from("build/docs/asciidoc") {
         into 'static/docs'
     }
