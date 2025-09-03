@@ -1,0 +1,78 @@
+plugins {
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.asciidoctor.jvm.convert' version '4.0.2'
+    id 'java'
+}
+
+group = 'nextstep'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    asciidoctorExt
+    configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+dependencies {
+    // Spring Boot starters
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Lombok
+    implementation 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-gson:0.11.2'
+
+    // DB
+    runtimeOnly 'com.h2database:h2'
+
+    // REST Docs
+    add("asciidoctorExt", "org.springframework.restdocs:spring-restdocs-asciidoctor")
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'io.rest-assured:rest-assured:5.3.1'
+
+    // Logging
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:5.3.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+bootJar {
+    from("build/docs/asciidoc") {
+        into 'static/docs'
+    }
+}
