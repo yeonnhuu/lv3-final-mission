@@ -57,7 +57,7 @@ jobs:
           # Compose should reference the tag via ${IMAGE_TAG} or use :current tag above
           sudo -E docker compose up --no-deps -d app
 
-      - name: Verify
+      - name: Validate Docker deployment
         run: |
           sudo docker ps
           sudo docker images | grep "$DOCKER_REPO" || true
