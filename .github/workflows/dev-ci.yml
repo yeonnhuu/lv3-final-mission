@@ -15,6 +15,20 @@ jobs:
       run:
         working-directory: .
 
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: testpw
+          MYSQL_DATABASE: testdb
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ptestpw || exit 1"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
     env:
       SPRING_PROFILES_ACTIVE: test
 
