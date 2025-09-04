@@ -16,11 +16,7 @@ jobs:
         working-directory: .
 
     env:
-      SPRING_PROFILES_ACTIVE: prod
-
-      AUTH_JWT_TOKEN_SECRET_KEY: ${{ secrets.AUTH_JWT_TOKEN_SECRET_KEY }}
-      EMAIL_SENDGRID_API_KEY: ${{ secrets.EMAIL_SENDGRID_API_KEY }}
-      EMAIL_SENDGRID_FROM: ${{ secrets.EMAIL_SENDGRID_FROM }}
+      SPRING_PROFILES_ACTIVE: test
 
     steps:
       - name: Checkout
@@ -56,6 +52,14 @@ jobs:
     defaults:
       run:
         working-directory: .
+
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+
+      AUTH_JWT_TOKEN_SECRET_KEY: ${{ secrets.AUTH_JWT_TOKEN_SECRET_KEY }}
+      EMAIL_SENDGRID_API_KEY: ${{ secrets.EMAIL_SENDGRID_API_KEY }}
+      EMAIL_SENDGRID_FROM: ${{ secrets.EMAIL_SENDGRID_FROM }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

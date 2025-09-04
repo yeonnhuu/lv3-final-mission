@@ -65,8 +65,6 @@ ext {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
-    systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active", "test")
-
 }
 
 bootJar {

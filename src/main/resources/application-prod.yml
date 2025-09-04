@@ -13,12 +13,14 @@ spring:
     password: ${DB_PASSWORD}
 
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-    hibernate:
-      ddl-auto: create-drop
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
     defer-datasource-initialization: true
 
   sql:
