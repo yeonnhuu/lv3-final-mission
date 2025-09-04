@@ -2,24 +2,23 @@ spring:
   application:
     name: lv3-final-mission
 
-  config:
-    import:
-      - optional:file:.env.prod[.properties]
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:h2:mem:database
 
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
 
   sql:
     init:
@@ -38,15 +37,13 @@ logging:
 auth:
   jwt:
     token:
-      secret-key: ${AUTH_JWT_TOKEN_SECRET_KEY}
+      secret-key: dummy-test-auth-jwt-token-secret-key
       expire-length: 3600000 # 1 hour
-
 email:
   sendgrid:
     base-url: https://api.sendgrid.com
-    api-key: ${EMAIL_SENDGRID_API_KEY}
-    from: ${EMAIL_SENDGRID_FROM}
+    api-key: dummy-test-api-key
+    from: dummy-test@email.com
 
   connect-timeout-length: 3s
   read-timeout-length: 5s
-
