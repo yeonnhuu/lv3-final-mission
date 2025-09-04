@@ -58,10 +58,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
 
-test {
-    useJUnitPlatform()
-}
-
 ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
@@ -69,6 +65,8 @@ ext {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active", "test")
+
 }
 
 bootJar {
