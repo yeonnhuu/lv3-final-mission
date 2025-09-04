@@ -52,7 +52,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ env.DEPLOY_TAG }}
         run: |
-          cd /home/ubuntu/app
+          cd /home/ubuntu/lv3-final-mission
           echo "Using image: $DOCKER_REPO:$IMAGE_TAG"
           # Compose should reference the tag via ${IMAGE_TAG} or use :current tag above
           sudo -E docker compose up --no-deps -d app
