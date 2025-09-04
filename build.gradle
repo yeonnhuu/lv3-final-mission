@@ -28,7 +28,6 @@ dependencies {
     // Spring Boot starters
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -43,7 +42,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-gson:0.11.2'
 
     // DB
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'com.h2database:h2'
 
     // REST Docs
     add("asciidoctorExt", "org.springframework.restdocs:spring-restdocs-asciidoctor")
@@ -58,10 +58,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
 }
 
-test {
-    useJUnitPlatform()
-}
-
 ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
@@ -69,6 +65,8 @@ ext {
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active", "test")
+
 }
 
 bootJar {
